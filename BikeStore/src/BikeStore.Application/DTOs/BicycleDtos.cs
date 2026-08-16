@@ -32,8 +32,12 @@ public sealed class SaveBicycleRequest
         ErrorMessage = "El modelo debe tener entre 1 y 100 caracteres.")]
     public string Model { get; set; } = string.Empty;
 
-    [Range(typeof(decimal), "0.01", "9999999.99",
-        ErrorMessage = "El precio debe ser mayor que cero.")]
+    [Range(
+    typeof(decimal),
+    "0.01",
+    "9999999.99",
+    ParseLimitsInInvariantCulture = true,
+    ErrorMessage = "El precio debe ser mayor que cero.")]
     public decimal Price { get; set; }
 
     [Range(0, 100000,
