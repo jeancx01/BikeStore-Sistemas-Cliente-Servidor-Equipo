@@ -1,0 +1,31 @@
+﻿@{
+    var modulo = ViewData["Modulo"]?.ToString() ?? "Módulo";
+    ViewData["Title"] = modulo;
+}
+
+<section class="form-shell">
+    <article class="form-card">
+        <span class="eyebrow">MÓDULO PROVISIONAL</span>
+        <h1>@modulo</h1>
+
+        <p>
+            La estructura está preparada, pero las funciones de este módulo
+            serán desarrolladas por el integrante responsable desde su propia rama.
+        </p>
+
+        <div class="sale-note">
+            <i class="bi bi-tools"></i>
+            <div>
+                <strong>En desarrollo</strong><br />
+                <span>Próximamente estarán disponibles sus opciones y registros.</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a class="button primary" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-arrow-left"></i>
+                Volver al inicio
+            </a>
+        </div>
+    </article>
+</section>

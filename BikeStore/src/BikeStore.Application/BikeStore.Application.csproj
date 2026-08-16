@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<ProjectReference Include="..\BikeStore.Domain\BikeStore.Domain.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Common\" />
+	  <Folder Include="Contracts\" />
+	  <Folder Include="DTOs\" />
+	  <Folder Include="Interfaces\" />
+	  <Folder Include="Services\" />
+	</ItemGroup>
+</Project>
