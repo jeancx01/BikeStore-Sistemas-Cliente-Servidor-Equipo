@@ -1,18 +1,46 @@
-﻿@{
+﻿@using System.Globalization
+@model DashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
+
+    var currencyCulture =
+        CultureInfo.GetCultureInfo("en-US");
 }
 
 <section class="dashboard-page">
 
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="dashboard-api-alert">
+            <i class="bi bi-exclamation-triangle"></i>
+
+            <div>
+                <strong>No se pudieron cargar las bicicletas</strong>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        </div>
+    }
+
     <article class="dashboard-hero">
         <div class="dashboard-hero-content">
-            <span class="dashboard-kicker">BIKESTORE · EQUIPO DE 5</span>
+            <span class="dashboard-kicker">
+                BIKESTORE · EQUIPO DE 5
+            </span>
+
             <h1>¡Bienvenidos, equipo BikeStore!</h1>
-            <strong>Cinco integrantes, una misma ruta.</strong>
-            <p>Consulta el estado general de la tienda y sus módulos.</p>
+
+            <strong>
+                Cinco integrantes, una misma ruta.
+            </strong>
+
+            <p>
+                Consulta el estado general de la tienda y sus módulos.
+            </p>
         </div>
 
-        <div class="dashboard-hero-illustration" aria-hidden="true">
+        <div class="dashboard-hero-illustration"
+             aria-hidden="true">
             <i class="bi bi-bicycle"></i>
         </div>
     </article>
@@ -23,10 +51,11 @@
             <div class="dashboard-stat-icon blue">
                 <i class="bi bi-bicycle"></i>
             </div>
+
             <div>
                 <span>Bicicletas</span>
-                <strong>0</strong>
-                <small>Sin registros todavía</small>
+                <strong>@Model.TotalBicycles</strong>
+                <small>Registradas en el catálogo</small>
             </div>
         </article>
 
@@ -34,6 +63,7 @@
             <div class="dashboard-stat-icon green">
                 <i class="bi bi-people-fill"></i>
             </div>
+
             <div>
                 <span>Clientes</span>
                 <strong>—</strong>
@@ -45,6 +75,7 @@
             <div class="dashboard-stat-icon orange">
                 <i class="bi bi-currency-dollar"></i>
             </div>
+
             <div>
                 <span>Ventas de hoy</span>
                 <strong>—</strong>
@@ -56,10 +87,11 @@
             <div class="dashboard-stat-icon red">
                 <i class="bi bi-exclamation-triangle-fill"></i>
             </div>
+
             <div>
                 <span>Stock bajo</span>
-                <strong>0</strong>
-                <small>Sin alertas todavía</small>
+                <strong>@Model.LowStockBicycles</strong>
+                <small>Requieren reposición</small>
             </div>
         </article>
 
@@ -67,10 +99,11 @@
             <div class="dashboard-stat-icon pink">
                 <i class="bi bi-box-seam"></i>
             </div>
+
             <div>
                 <span>Agotadas</span>
-                <strong>0</strong>
-                <small>Sin registros todavía</small>
+                <strong>@Model.OutOfStockBicycles</strong>
+                <small>Sin unidades disponibles</small>
             </div>
         </article>
 
@@ -78,10 +111,17 @@
             <div class="dashboard-stat-icon purple">
                 <i class="bi bi-wallet2"></i>
             </div>
+
             <div>
-                <span>Valor del inventario</span>
-                <strong>—</strong>
-                <small>Pendiente de integración</small>
+                <span>Valor de existencias</span>
+
+                <strong>
+                    @Model.InventoryValue.ToString(
+                        "C2",
+                        currencyCulture)
+                </strong>
+
+                <small>Precio por unidades disponibles</small>
             </div>
         </article>
 
@@ -94,22 +134,78 @@
                 <h2>Resumen de bicicletas</h2>
             </header>
 
-            <div class="dashboard-empty">
-                <div class="dashboard-empty-icon">
-                    <i class="bi bi-bicycle"></i>
+            @if (!Model.HasBicycles)
+            {
+                <div class="dashboard-empty">
+                    <div class="dashboard-empty-icon">
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+
+                    <h3>Aún no hay bicicletas registradas</h3>
+
+                    <p>
+                        Registra una bicicleta para comenzar a llenar
+                        el catálogo.
+                    </p>
+
+                    <a class="button primary"
+                       asp-controller="Bicicletas"
+                       asp-action="Crear">
+                        <i class="bi bi-plus-lg"></i>
+                        Registrar bicicleta
+                    </a>
                 </div>
+            }
+            else
+            {
+                <div class="dashboard-bicycle-list">
 
-                <h3>Aún no hay bicicletas registradas</h3>
-                <p>En el siguiente paso conectaremos este espacio con tu módulo.</p>
+                    @foreach (var bicycle in Model.BicyclesToWatch)
+                    {
+                        var statusClass =
+                            bicycle.Stock == 0
+                                ? "out"
+                                : bicycle.Stock <= 5
+                                    ? "low"
+                                    : "available";
 
-                <a class="button primary"
-                   asp-controller="EstadoModulo"
-                   asp-action="Pendiente"
-                   asp-route-nombre="Bicicletas">
-                    <i class="bi bi-bicycle"></i>
-                    Ir a Bicicletas
-                </a>
-            </div>
+                        <div class="dashboard-bicycle-row">
+
+                            <div class="dashboard-bicycle-icon">
+                                <i class="bi bi-bicycle"></i>
+                            </div>
+
+                            <div class="dashboard-bicycle-name">
+                                <strong>@bicycle.Brand</strong>
+
+                                <span>
+                                    @bicycle.Model · @bicycle.Category
+                                </span>
+                            </div>
+
+                            <div class="dashboard-bicycle-stock">
+                                <strong>@bicycle.Stock</strong>
+                                <span>unidades</span>
+                            </div>
+
+                            <span class="dashboard-bicycle-status @statusClass">
+                                @bicycle.Status
+                            </span>
+
+                        </div>
+                    }
+
+                    <div class="dashboard-panel-actions">
+                        <a class="button primary"
+                           asp-controller="Bicicletas"
+                           asp-action="Index">
+                            <i class="bi bi-bicycle"></i>
+                            Ver catálogo completo
+                        </a>
+                    </div>
+
+                </div>
+            }
         </article>
 
         <article class="dashboard-panel">
@@ -121,38 +217,72 @@
 
                 <div class="dashboard-module-row">
                     <div class="dashboard-module-icon blue">
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+
+                    <strong>Bicicletas</strong>
+
+                    <span class="dashboard-module-dot green"></span>
+
+                    <span class="dashboard-module-status ready">
+                        Operativo
+                    </span>
+                </div>
+
+                <div class="dashboard-module-row">
+                    <div class="dashboard-module-icon blue">
                         <i class="bi bi-grid"></i>
                     </div>
+
                     <strong>Categorías</strong>
+
                     <span class="dashboard-module-dot orange"></span>
-                    <span class="dashboard-module-status">En desarrollo</span>
+
+                    <span class="dashboard-module-status">
+                        En desarrollo
+                    </span>
                 </div>
 
                 <div class="dashboard-module-row">
                     <div class="dashboard-module-icon green">
                         <i class="bi bi-people"></i>
                     </div>
+
                     <strong>Clientes</strong>
+
                     <span class="dashboard-module-dot green"></span>
-                    <span class="dashboard-module-status">En desarrollo</span>
+
+                    <span class="dashboard-module-status">
+                        En desarrollo
+                    </span>
                 </div>
 
                 <div class="dashboard-module-row">
                     <div class="dashboard-module-icon red">
                         <i class="bi bi-cart3"></i>
                     </div>
+
                     <strong>Ventas</strong>
+
                     <span class="dashboard-module-dot red"></span>
-                    <span class="dashboard-module-status">En desarrollo</span>
+
+                    <span class="dashboard-module-status">
+                        En desarrollo
+                    </span>
                 </div>
 
                 <div class="dashboard-module-row">
                     <div class="dashboard-module-icon purple">
                         <i class="bi bi-box-seam"></i>
                     </div>
+
                     <strong>Inventario</strong>
+
                     <span class="dashboard-module-dot purple"></span>
-                    <span class="dashboard-module-status">En desarrollo</span>
+
+                    <span class="dashboard-module-status">
+                        En desarrollo
+                    </span>
                 </div>
 
             </div>

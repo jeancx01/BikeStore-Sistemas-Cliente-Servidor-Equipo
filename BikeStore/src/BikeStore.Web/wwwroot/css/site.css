@@ -2660,3 +2660,161 @@ body.sidebar-collapsed .collapse-menu i {
     .bike-confirm-delete:hover {
         background: #be123c;
     }
+
+/* =========================================================
+   DASHBOARD CON DATOS REALES DE BICICLETAS
+   ========================================================= */
+
+.dashboard-api-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    background: #fff1f2;
+    color: #be123c;
+}
+
+    .dashboard-api-alert i {
+        font-size: 21px;
+    }
+
+    .dashboard-api-alert div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .dashboard-api-alert strong {
+        font-size: 13px;
+    }
+
+    .dashboard-api-alert span {
+        font-size: 11px;
+    }
+
+/* LISTA DEL RESUMEN */
+
+.dashboard-bicycle-list {
+    padding: 8px 18px 18px;
+}
+
+.dashboard-bicycle-row {
+    min-height: 58px;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid #edf0f5;
+}
+
+    .dashboard-bicycle-row:last-of-type {
+        border-bottom: 0;
+    }
+
+.dashboard-bicycle-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #eaf2ff;
+    color: #1769e8;
+    font-size: 17px;
+}
+
+.dashboard-bicycle-name {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .dashboard-bicycle-name strong {
+        overflow: hidden;
+        color: #243047;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dashboard-bicycle-name span {
+        overflow: hidden;
+        color: #8a96aa;
+        font-size: 10px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.dashboard-bicycle-stock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+    .dashboard-bicycle-stock strong {
+        color: #273247;
+        font-size: 13px;
+    }
+
+    .dashboard-bicycle-stock span {
+        color: #98a2b3;
+        font-size: 9px;
+    }
+
+.dashboard-bicycle-status {
+    min-width: 74px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 750;
+    text-align: center;
+    white-space: nowrap;
+}
+
+    .dashboard-bicycle-status.available {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .dashboard-bicycle-status.low {
+        background: #fff3d7;
+        color: #c57900;
+    }
+
+    .dashboard-bicycle-status.out {
+        background: #ffe4e6;
+        color: #be123c;
+    }
+
+.dashboard-panel-actions {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+}
+
+/* ESTADO OPERATIVO */
+
+.dashboard-module-status.ready {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* ADAPTACIÓN PARA CELULARES */
+
+@media (max-width: 700px) {
+    .dashboard-bicycle-row {
+        grid-template-columns: 40px minmax(0, 1fr) auto;
+    }
+
+    .dashboard-bicycle-stock {
+        display: none;
+    }
+
+    .dashboard-bicycle-status {
+        min-width: auto;
+    }
+}
