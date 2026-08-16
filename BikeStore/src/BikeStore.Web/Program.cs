@@ -1,7 +1,27 @@
+using BikeStore.Web.Services;
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpClient<
+    IBicycleApiClient,
+    BicycleApiClient>(
+    client =>
+    {
+        var apiBaseUrl =
+            builder.Configuration["ApiBaseUrl"]
+            ?? throw new InvalidOperationException(
+                "No se encontró la dirección de BikeStore.Api.");
+
+        client.BaseAddress =
+            new Uri(apiBaseUrl);
+
+        client.Timeout =
+            TimeSpan.FromSeconds(30);
+    });
 
 var app = builder.Build();
 

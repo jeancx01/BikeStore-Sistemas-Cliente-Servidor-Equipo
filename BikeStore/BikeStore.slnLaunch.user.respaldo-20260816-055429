@@ -1,0 +1,28 @@
+[
+  {
+    "Name": "Nuevo perfil",
+    "Projects": [
+      {
+        "Path": "src\\BikeStore.Api\\BikeStore.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\BikeStore.Web\\BikeStore.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "Nuevo perfil (1)",
+    "Projects": [
+      {
+        "Path": "src\\BikeStore.Api\\BikeStore.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\BikeStore.Web\\BikeStore.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
