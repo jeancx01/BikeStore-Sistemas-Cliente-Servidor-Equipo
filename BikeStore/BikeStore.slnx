@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="Directory.Build.props" />
+    <File Path="global.json" />
+  </Folder>
   <Project Path="src/BikeStore.Api/BikeStore.Api.csproj" />
   <Project Path="src/BikeStore.Application/BikeStore.Application.csproj" />
   <Project Path="src/BikeStore.Domain/BikeStore.Domain.csproj" />
