@@ -1,0 +1,444 @@
+﻿@model BikeStore.Web.Models.BicycleIndexViewModel
+
+@{
+    ViewData["Title"] = "Bicicletas";
+}
+
+<section class="bike-page">
+    <header class="bike-page-header">
+        <div>
+            <span class="bike-eyebrow">
+                GESTIÓN DE CATÁLOGO
+            </span>
+
+            <h1>Bicicletas</h1>
+
+            <p>
+                Consulta, registra y administra las bicicletas
+                disponibles en BikeStore.
+            </p>
+        </div>
+
+        <a class="bike-primary-button"
+           asp-controller="Bicicletas"
+           asp-action="Crear">
+            <i class="bi bi-plus-lg"></i>
+            Nueva bicicleta
+        </a>
+    </header>
+
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="bike-alert bike-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>@successMessage</span>
+        </div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="bike-alert bike-alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <span>@errorMessage</span>
+        </div>
+    }
+
+    @if (ViewData["ApiError"] is string apiError)
+    {
+        <div class="bike-alert bike-alert-error">
+            <i class="bi bi-wifi-off"></i>
+
+            <div>
+                <strong>No fue posible cargar los datos.</strong>
+                <span>@apiError</span>
+            </div>
+        </div>
+    }
+
+    <div class="bike-stats-grid">
+        <a class="bike-stat-card bike-stat-total"
+           asp-action="Index">
+            <div class="bike-stat-icon">
+                <i class="bi bi-bicycle"></i>
+            </div>
+
+            <div>
+                <span>Total de bicicletas</span>
+                <strong>@Model.Total</strong>
+                <small>Registradas en el catálogo</small>
+            </div>
+        </a>
+
+        <a class="bike-stat-card bike-stat-available"
+           asp-action="Index"
+           asp-route-estado="disponibles">
+            <div class="bike-stat-icon">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+
+            <div>
+                <span>Disponibles</span>
+                <strong>@Model.Available</strong>
+                <small>Con existencias suficientes</small>
+            </div>
+        </a>
+
+        <a class="bike-stat-card bike-stat-low"
+           asp-action="Index"
+           asp-route-estado="stock-bajo">
+            <div class="bike-stat-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+            <div>
+                <span>Stock bajo</span>
+                <strong>@Model.LowStock</strong>
+                <small>Requieren reposición</small>
+            </div>
+        </a>
+
+        <a class="bike-stat-card bike-stat-empty"
+           asp-action="Index"
+           asp-route-estado="agotadas">
+            <div class="bike-stat-icon">
+                <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div>
+                <span>Agotadas</span>
+                <strong>@Model.OutOfStock</strong>
+                <small>Sin unidades disponibles</small>
+            </div>
+        </a>
+    </div>
+
+    <form class="bike-filter-card"
+          asp-controller="Bicicletas"
+          asp-action="Index"
+          method="get">
+
+        <div class="bike-filter-heading">
+            <div>
+                <h2>Buscar bicicletas</h2>
+                <p>
+                    Filtra el catálogo por modelo, categoría,
+                    marca o estado.
+                </p>
+            </div>
+
+            <i class="bi bi-funnel"></i>
+        </div>
+
+        <div class="bike-filter-grid">
+            <label class="bike-field bike-search-field">
+                <span>Marca o modelo</span>
+
+                <div class="bike-input-icon">
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           name="buscar"
+                           value="@Model.Search"
+                           placeholder="Ej. Trek o Marlin 5" />
+                </div>
+            </label>
+
+            <label class="bike-field">
+                <span>Categoría</span>
+
+                <select name="categoriaId">
+                    <option value="">Todas las categorías</option>
+
+                    @foreach (var category in Model.Categories)
+                    {
+                        if (Model.CategoryId == category.Id)
+                        {
+                            <option value="@category.Id" selected>
+                                @category.Name
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@category.Id">
+                                @category.Name
+                            </option>
+                        }
+                    }
+                </select>
+            </label>
+
+            <label class="bike-field">
+                <span>Marca</span>
+
+                <input type="text"
+                       name="marca"
+                       value="@Model.Brand"
+                       placeholder="Ej. Specialized" />
+            </label>
+
+            <label class="bike-field">
+                <span>Estado</span>
+
+                <select name="estado">
+                    @if (string.IsNullOrWhiteSpace(Model.Status))
+                    {
+                        <option value="" selected>
+                            Todos los estados
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="">
+                            Todos los estados
+                        </option>
+                    }
+
+                    @if (Model.Status == "disponibles")
+                    {
+                        <option value="disponibles" selected>
+                            Disponible
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="disponibles">
+                            Disponible
+                        </option>
+                    }
+
+                    @if (Model.Status == "stock-bajo")
+                    {
+                        <option value="stock-bajo" selected>
+                            Bajo stock
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="stock-bajo">
+                            Bajo stock
+                        </option>
+                    }
+
+                    @if (Model.Status == "agotadas")
+                    {
+                        <option value="agotadas" selected>
+                            Agotado
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="agotadas">
+                            Agotado
+                        </option>
+                    }
+                </select>
+            </label>
+        </div>
+
+        <div class="bike-filter-actions">
+            <button class="bike-primary-button"
+                    type="submit">
+                <i class="bi bi-search"></i>
+                Aplicar filtros
+            </button>
+
+            <a class="bike-secondary-button"
+               asp-controller="Bicicletas"
+               asp-action="Index">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Limpiar
+            </a>
+        </div>
+    </form>
+
+    <section class="bike-table-card">
+        <div class="bike-table-heading">
+            <div>
+                <h2>Catálogo de bicicletas</h2>
+
+                <p>
+                    Se encontraron
+                    <strong>@Model.Items.Count</strong>
+                    resultados.
+                </p>
+            </div>
+        </div>
+
+        <div class="bike-table-responsive">
+            <table class="bike-table">
+                <thead>
+                    <tr>
+                        <th>Bicicleta</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th class="bike-actions-column">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var bicycle in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="bike-product-cell">
+                                    <div class="bike-product-icon">
+                                        <i class="bi bi-bicycle"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            @bicycle.Brand
+                                        </strong>
+
+                                        <span>
+                                            @bicycle.Model
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="bike-category-badge">
+                                    @bicycle.Category
+                                </span>
+                            </td>
+
+                            <td class="bike-price">
+                                $@bicycle.Price.ToString("N2")
+                            </td>
+
+                            <td>
+                                <span class="bike-stock-badge
+                                    @StockClass(bicycle.Stock)">
+                                    @bicycle.Stock unidades
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="bike-status-badge
+                                    @StatusClass(bicycle.Status)">
+                                    <span class="bike-status-dot"></span>
+                                    @bicycle.Status
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="bike-row-actions">
+                                    <a class="bike-icon-button bike-edit-button"
+                                       asp-controller="Bicicletas"
+                                       asp-action="Editar"
+                                       asp-route-id="@bicycle.Id"
+                                       title="Editar bicicleta">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <button class="bike-icon-button bike-delete-button"
+                                            type="button"
+                                            title="Eliminar bicicleta"
+                                            onclick="document.getElementById('delete-bike-@bicycle.Id').showModal()">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+
+                                    <dialog id="delete-bike-@bicycle.Id"
+                                            class="bike-confirm-dialog">
+
+                                        <div class="bike-confirm-card">
+                                            <div class="bike-confirm-icon">
+                                                <i class="bi bi-trash3"></i>
+                                            </div>
+
+                                            <h3>Eliminar bicicleta</h3>
+
+                                            <p>
+                                                ¿Seguro que deseas eliminar
+                                                <strong>@bicycle.Brand @bicycle.Model</strong>?
+                                            </p>
+
+                                            <span>Esta acción no se puede deshacer.</span>
+
+                                            <div class="bike-confirm-actions">
+                                                <button type="button"
+                                                        class="bike-confirm-cancel"
+                                                        onclick="document.getElementById('delete-bike-@bicycle.Id').close()">
+                                                    Cancelar
+                                                </button>
+
+                                                <form asp-controller="Bicicletas"
+                                                      asp-action="Eliminar"
+                                                      asp-route-id="@bicycle.Id"
+                                                      method="post">
+
+                                                    <button type="submit"
+                                                            class="bike-confirm-delete">
+                                                        <i class="bi bi-trash3"></i>
+                                                        Sí, eliminar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </dialog>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.Items.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6">
+                                <div class="bike-empty-state">
+                                    <div class="bike-empty-icon">
+                                        <i class="bi bi-bicycle"></i>
+                                    </div>
+
+                                    <h3>No se encontraron bicicletas</h3>
+
+                                    <p>
+                                        Cambia los filtros o registra una
+                                        nueva bicicleta.
+                                    </p>
+
+                                    <a class="bike-primary-button"
+                                       asp-controller="Bicicletas"
+                                       asp-action="Crear">
+                                        <i class="bi bi-plus-lg"></i>
+                                        Nueva bicicleta
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status switch
+        {
+            "Disponible" => "is-available",
+            "Bajo stock" => "is-low",
+            "Agotado" => "is-empty",
+            _ => "is-inactive"
+        };
+    }
+
+    private static string StockClass(int stock)
+    {
+        return stock switch
+        {
+            0 => "is-empty",
+            <= 5 => "is-low",
+            _ => "is-available"
+        };
+    }
+}

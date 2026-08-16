@@ -1,0 +1,230 @@
+﻿@model BikeStore.Web.Models.BicycleFormViewModel
+
+@{
+    var isEditing = Model.Id > 0;
+    var actionName = isEditing ? "Editar" : "Crear";
+
+    ViewData["Title"] =
+        isEditing
+            ? "Editar bicicleta"
+            : "Nueva bicicleta";
+}
+
+<section class="bike-form-page">
+    <a class="bike-back-link"
+       asp-controller="Bicicletas"
+       asp-action="Index">
+        <i class="bi bi-arrow-left"></i>
+        Volver al catálogo
+    </a>
+
+    <div class="bike-form-layout">
+        <section class="bike-form-card">
+            <header class="bike-form-header">
+                <div class="bike-form-header-icon">
+                    <i class="bi bi-bicycle"></i>
+                </div>
+
+                <div>
+                    <span class="bike-eyebrow">
+                        @(isEditing
+                            ? "ACTUALIZAR REGISTRO"
+                            : "NUEVO REGISTRO")
+                    </span>
+
+                    <h1>@ViewData["Title"]</h1>
+
+                    <p>
+                        Completa la información solicitada.
+                        El estado se calculará automáticamente
+                        según el stock.
+                    </p>
+                </div>
+            </header>
+
+            <form asp-controller="Bicicletas"
+                  asp-action="@actionName"
+                  method="post">
+
+                <input asp-for="Id"
+                       type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="bike-validation-summary">
+                </div>
+
+                <div class="bike-form-grid">
+                    <div class="bike-form-group bike-form-full">
+                        <label asp-for="CategoryId"></label>
+
+                        <div class="bike-input-wrapper">
+                            <i class="bi bi-grid"></i>
+
+                            <select asp-for="CategoryId"
+                                    asp-items="ViewBag.Categories">
+                                <option value="">
+                                    Seleccione una categoría
+                                </option>
+                            </select>
+                        </div>
+
+                        <span asp-validation-for="CategoryId"
+                              class="bike-field-error">
+                        </span>
+                    </div>
+
+                    <div class="bike-form-group">
+                        <label asp-for="Brand"></label>
+
+                        <div class="bike-input-wrapper">
+                            <i class="bi bi-tag"></i>
+
+                            <input asp-for="Brand"
+                                   placeholder="Ej. Trek"
+                                   autocomplete="off" />
+                        </div>
+
+                        <span asp-validation-for="Brand"
+                              class="bike-field-error">
+                        </span>
+                    </div>
+
+                    <div class="bike-form-group">
+                        <label asp-for="Model"></label>
+
+                        <div class="bike-input-wrapper">
+                            <i class="bi bi-bicycle"></i>
+
+                            <input asp-for="Model"
+                                   placeholder="Ej. Marlin 5"
+                                   autocomplete="off" />
+                        </div>
+
+                        <span asp-validation-for="Model"
+                              class="bike-field-error">
+                        </span>
+                    </div>
+
+                    <div class="bike-form-group">
+                        <label asp-for="Price"></label>
+
+                        <div class="bike-input-wrapper">
+                            <i class="bi bi-currency-dollar"></i>
+
+                            <input asp-for="Price"
+                                   type="number"
+                                   min="0.01"
+                                   max="9999999.99"
+                                   step="0.01"
+                                   placeholder="0.00" />
+                        </div>
+
+                        <span asp-validation-for="Price"
+                              class="bike-field-error">
+                        </span>
+                    </div>
+
+                    <div class="bike-form-group">
+                        <label asp-for="Stock"></label>
+
+                        <div class="bike-input-wrapper">
+                            <i class="bi bi-box-seam"></i>
+
+                            <input asp-for="Stock"
+                                   type="number"
+                                   min="0"
+                                   max="100000"
+                                   step="1"
+                                   placeholder="0" />
+                        </div>
+
+                        <span asp-validation-for="Stock"
+                              class="bike-field-error">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bike-stock-information">
+                    <div>
+                        <i class="bi bi-info-circle-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Estado automático
+                        </strong>
+
+                        <p>
+                            Más de 5 unidades:
+                            <b>Disponible</b>.
+                            De 1 a 5:
+                            <b>Bajo stock</b>.
+                            Sin unidades:
+                            <b>Agotado</b>.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bike-form-actions">
+                    <a class="bike-secondary-button"
+                       asp-controller="Bicicletas"
+                       asp-action="Index">
+                        Cancelar
+                    </a>
+
+                    <button class="bike-primary-button"
+                            type="submit">
+                        <i class="bi
+                            @(isEditing
+                               ? "bi-check-lg"
+                               : "bi-plus-lg")">
+                        </i>
+
+                        @(isEditing
+                            ? "Guardar cambios"
+                            : "Registrar bicicleta")
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <aside class="bike-form-help">
+            <div class="bike-form-help-icon">
+                <i class="bi bi-lightbulb"></i>
+            </div>
+
+            <h2>Información del registro</h2>
+
+            <p>
+                Los datos ingresados serán enviados a la API REST
+                y almacenados en la base de datos BikeStoreDB.
+            </p>
+
+            <ul>
+                <li>
+                    <i class="bi bi-check-circle"></i>
+                    Selecciona una categoría existente.
+                </li>
+
+                <li>
+                    <i class="bi bi-check-circle"></i>
+                    Ingresa la marca y el modelo reales.
+                </li>
+
+                <li>
+                    <i class="bi bi-check-circle"></i>
+                    El precio debe ser mayor que cero.
+                </li>
+
+                <li>
+                    <i class="bi bi-check-circle"></i>
+                    El stock no puede ser negativo.
+                </li>
+            </ul>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
