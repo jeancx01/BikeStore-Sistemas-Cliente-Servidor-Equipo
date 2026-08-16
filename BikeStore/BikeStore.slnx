@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/Database/">
+    <File Path="Database/01_Create_BikeStoreDB.sql" />
+    <File Path="Database/02_Datos_Prueba.sql" />
+    <File Path="Database/03_Consultas_Verificacion.sql" />
+  </Folder>
   <Folder Name="/Elementos de la solución/">
     <File Path="Directory.Build.props" />
     <File Path="global.json" />
